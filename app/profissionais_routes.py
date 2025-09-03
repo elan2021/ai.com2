@@ -100,3 +100,11 @@ def excluir_profissional(user_id):
     db.session.commit()
     flash('Profissional excluído com sucesso!', 'success')
     return redirect(url_for('profissionais.listar_profissionais'))
+
+# Rota para o dashboard do profissional
+@profissionais_bp.route('/dashboard')
+@login_required
+def dashboard_profissional():
+    if current_user.role != 'profissional':
+        abort(403)
+    return render_template('profissionais/dashboard_profissional.html', title='Meu Dashboard')

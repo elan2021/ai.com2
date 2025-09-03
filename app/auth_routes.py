@@ -45,9 +45,9 @@ def login():
                     flash('Login bem-sucedido!', 'success')
                     return redirect(url_for('dashboard.index'))
             else:
-                # Futuramente, redirecionar para o dashboard do profissional
-                flash('Login de profissional bem-sucedido!', 'success')
-                return redirect(url_for('main.index')) # Placeholder
+                # Redirecionar para o dashboard do profissional
+                flash('Login bem-sucedido!', 'success')
+                return redirect(url_for('profissionais.dashboard_profissional'))
         else:
             flash('Usuário ou senha inválidos.', 'danger')
 

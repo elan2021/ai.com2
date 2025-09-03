@@ -1,0 +1,15 @@
+{% extends "dashboard/layout.html" %}
+
+{% block dashboard_content %}
+    <h2>Bem-vindo ao Dashboard da {{ loja.nome }}!</h2>
+    <p>Este é o painel de controle da sua loja. Use o menu à esquerda para navegar pelas funcionalidades.</p>
+
+    <div class="line"></div>
+
+    <h4>Informações da Loja:</h4>
+    <ul>
+        <li><strong>Nome:</strong> {{ loja.nome }}</li>
+        <li><strong>Telefone:</strong> {{ loja.telefone }}</li>
+        <li><strong>Domínio:</strong> <a href="#">seudominio.com/{{ loja.dominio }}</a></li>
+    </ul>
+{% endblock %}

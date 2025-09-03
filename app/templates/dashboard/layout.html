@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - {{ super() }}{% endblock %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="wrapper">
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3 class="logo">SaaS Logo</h3>
+            <button type="button" id="sidebarCollapseBtn" class="btn btn-link text-white">
+                <i class="bi bi-arrow-left-circle-fill"></i>
+            </button>
+        </div>
+
+        <ul class="list-unstyled components">
+            <p>Menu Principal</p>
+            <li class="active">
+                <a href="#">Dashboard</a>
+            </li>
+            <li>
+                <a href="#">Produtos</a>
+            </li>
+            <li>
+                <a href="#">Pedidos</a>
+            </li>
+            <li>
+                <a href="#">Clientes</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Page Content -->
+    <div id="content">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <button type="button" id="sidebarCollapse" class="btn btn-info d-md-none">
+                    <i class="bi bi-list"></i>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="https://via.placeholder.com/30" class="rounded-circle" alt="user_thumb">
+                                {{ current_user.nome }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="#">Perfil</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <main class="p-4">
+            {% block dashboard_content %}{% endblock %}
+        </main>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const sidebar = document.getElementById('sidebar');
+    const sidebarCollapseBtn = document.getElementById('sidebarCollapseBtn');
+    const mobileSidebarCollapse = document.getElementById('sidebarCollapse');
+
+    const toggleSidebar = () => {
+        sidebar.classList.toggle('active');
+        const icon = sidebarCollapseBtn.querySelector('i');
+        if (sidebar.classList.contains('active')) {
+            icon.classList.remove('bi-arrow-left-circle-fill');
+            icon.classList.add('bi-arrow-right-circle-fill');
+        } else {
+            icon.classList.remove('bi-arrow-right-circle-fill');
+            icon.classList.add('bi-arrow-left-circle-fill');
+        }
+    };
+
+    if (sidebarCollapseBtn) {
+        sidebarCollapseBtn.addEventListener('click', toggleSidebar);
+    }
+
+    if (mobileSidebarCollapse) {
+        mobileSidebarCollapse.addEventListener('click', toggleSidebar);
+    }
+});
+</script>
+{% endblock %}

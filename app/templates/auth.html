@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Acesso - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <ul class="nav nav-tabs card-header-tabs" id="auth-tabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login-panel" type="button" role="tab" aria-controls="login-panel" aria-selected="true">Login</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="cadastro-tab" data-bs-toggle="tab" data-bs-target="#cadastro-panel" type="button" role="tab" aria-controls="cadastro-panel" aria-selected="false">Cadastro</button>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-content" id="auth-tabs-content">
+                    <!-- Painel de Login -->
+                    <div class="tab-pane fade show active" id="login-panel" role="tabpanel" aria-labelledby="login-tab">
+                        <h5 class="card-title">Entrar</h5>
+                        <form method="POST" action="{{ url_for('auth.login') }}">
+                            {{ login_form.hidden_tag() }}
+                            <div class="mb-3">
+                                {{ login_form.username.label(class="form-label") }}
+                                {{ login_form.username(class="form-control") }}
+                            </div>
+                            <div class="mb-3">
+                                {{ login_form.password.label(class="form-label") }}
+                                {{ login_form.password(class="form-control") }}
+                            </div>
+                            {{ login_form.submit(class="btn btn-primary") }}
+                        </form>
+                    </div>
+                    <!-- Painel de Cadastro -->
+                    <div class="tab-pane fade" id="cadastro-panel" role="tabpanel" aria-labelledby="cadastro-tab">
+                        <h5 class="card-title">Criar Nova Conta</h5>
+                        <form method="POST" action="{{ url_for('auth.login') }}">
+                            {{ cadastro_form.hidden_tag() }}
+                            <div class="mb-3">
+                                {{ cadastro_form.nome.label(class="form-label") }}
+                                {{ cadastro_form.nome(class="form-control") }}
+                            </div>
+                            <div class="mb-3">
+                                {{ cadastro_form.username.label(class="form-label") }}
+                                {{ cadastro_form.username(class="form-control") }}
+                            </div>
+                            <div class="mb-3">
+                                {{ cadastro_form.password.label(class="form-label") }}
+                                {{ cadastro_form.password(class="form-control") }}
+                            </div>
+                             <div class="mb-3">
+                                {{ cadastro_form.confirm_password.label(class="form-label") }}
+                                {{ cadastro_form.confirm_password(class="form-control") }}
+                            </div>
+                            <div class="mb-3">
+                                {{ cadastro_form.whatsapp.label(class="form-label") }}
+                                {{ cadastro_form.whatsapp(class="form-control") }}
+                            </div>
+                            {{ cadastro_form.submit(class="btn btn-success") }}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">{{ title }}</h4>
+            </div>
+            <div class="card-body">
+                <p>Parece que você ainda não tem uma loja. Vamos criar uma!</p>
+                <form method="POST" action="{{ url_for('loja.criar_loja') }}">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.nome.label(class="form-label") }}
+                        {{ form.nome(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.telefone.label(class="form-label") }}
+                        {{ form.telefone(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.dominio.label(class="form-label") }}
+                        <div class="input-group">
+                            <span class="input-group-text">seudominio.com/</span>
+                            {{ form.dominio(class="form-control") }}
+                        </div>
+                         {% if form.dominio.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.dominio.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    {{ form.submit(class="btn btn-primary") }}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

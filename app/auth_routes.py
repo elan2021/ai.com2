@@ -6,7 +6,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 
 auth_bp = Blueprint('auth', __name__)
 
-@auth_bp.route('/login', methods=['GET', 'POST'])
+@auth_bp.route('/', methods=['GET', 'POST'])
 def login():
     # Se o usuário já estiver logado, redireciona para o dashboard
     if current_user.is_authenticated:

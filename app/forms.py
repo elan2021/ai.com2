@@ -7,7 +7,7 @@ class LoginForm(FlaskForm):
     """Formulário de login."""
     username = StringField('Usuário', validators=[DataRequired()])
     password = PasswordField('Senha', validators=[DataRequired()])
-    submit = SubmitField('Entrar', render_kw={'name': 'login-submit'})
+    submit = SubmitField('Entrar')
 
 class CadastroForm(FlaskForm):
     """Formulário de cadastro de proprietário."""
@@ -16,7 +16,7 @@ class CadastroForm(FlaskForm):
     password = PasswordField('Senha', validators=[DataRequired(), Length(min=6)])
     confirm_password = PasswordField('Confirmar Senha', validators=[DataRequired(), EqualTo('password', message='As senhas devem ser iguais.')])
     whatsapp = StringField('WhatsApp', validators=[DataRequired(), Length(min=10, max=20)])
-    submit = SubmitField('Cadastrar', render_kw={'name': 'cadastro-submit'})
+    submit = SubmitField('Cadastrar')
 
     def validate_username(self, username):
         """Valida se o nome de usuário já existe."""

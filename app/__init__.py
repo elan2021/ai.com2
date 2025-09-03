@@ -40,6 +40,7 @@ def create_app():
         from .dashboard_routes import dashboard_bp
         from .profile_routes import profile_bp
         from .profissionais_routes import profissionais_bp
+        from .servicos_routes import servicos_bp
 
         # Register Blueprints
         app.register_blueprint(main_bp)
@@ -48,6 +49,7 @@ def create_app():
         app.register_blueprint(dashboard_bp)
         app.register_blueprint(profile_bp)
         app.register_blueprint(profissionais_bp)
+        app.register_blueprint(servicos_bp)
 
         # Create database tables for our models
         db.create_all()

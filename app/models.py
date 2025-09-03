@@ -40,6 +40,7 @@ class Loja(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
     profissionais = db.relationship('Profissional', backref='loja', lazy=True, cascade="all, delete-orphan")
+    servicos = db.relationship('Servico', backref='loja', lazy=True, cascade="all, delete-orphan")
 
     def __repr__(self):
         return f'<Loja {self.nome}>'
@@ -57,3 +58,16 @@ class Profissional(db.Model):
 
     def __repr__(self):
         return f'<Profissional Profile for User {self.user_id}>'
+
+class Servico(db.Model):
+    """Model para os serviços oferecidos pela loja."""
+    __tablename__ = 'servicos'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(100), nullable=False)
+    duracao = db.Column(db.Integer, nullable=False) # Duração em minutos
+    preco = db.Column(db.Float, nullable=False)
+    loja_id = db.Column(db.Integer, db.ForeignKey('lojas.id'), nullable=False)
+
+    def __repr__(self):
+        return f'<Servico {self.nome}>'

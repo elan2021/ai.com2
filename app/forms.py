@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField, FloatField
+from wtforms import StringField, PasswordField, SubmitField, SelectField, FloatField, IntegerField
 from flask_wtf.file import FileField, FileAllowed
 from wtforms.validators import DataRequired, EqualTo, Length, ValidationError, NumberRange
 from .models import User, Loja
@@ -33,6 +33,13 @@ class EditProfissionalForm(FlaskForm):
     comissao_tipo = SelectField('Tipo de Comissão', choices=[('porcentagem', 'Porcentagem (%)'), ('fixo', 'Valor Fixo (R$)')], validators=[DataRequired()])
     comissao_valor = FloatField('Valor da Comissão', validators=[DataRequired(), NumberRange(min=0)])
     submit = SubmitField('Salvar Alterações')
+
+class ServicoForm(FlaskForm):
+    """Formulário para adicionar ou editar um serviço."""
+    nome = StringField('Nome do Serviço', validators=[DataRequired(), Length(max=100)])
+    duracao = IntegerField('Duração (em minutos)', validators=[DataRequired(), NumberRange(min=1)])
+    preco = FloatField('Preço (R$)', validators=[DataRequired(), NumberRange(min=0)])
+    submit = SubmitField('Salvar Serviço')
 
 class LojaForm(FlaskForm):
     """Formulário para criar/editar uma loja."""

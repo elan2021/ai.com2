@@ -1,0 +1,28 @@
+{% extends "dashboard/layout.html" %}
+
+{% block dashboard_content %}
+    <h2>{{ title }}</h2>
+    <div class="card mt-4">
+        <div class="card-body">
+            <form method="POST" action="">
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ form.nome.label(class="form-label") }}
+                    {{ form.nome(class="form-control") }}
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.duracao.label(class="form-label") }}
+                        {{ form.duracao(class="form-control") }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.preco.label(class="form-label") }}
+                        {{ form.preco(class="form-control") }}
+                    </div>
+                </div>
+                {{ form.submit(class="btn btn-primary mt-3") }}
+                <a href="{{ url_for('servicos.listar_servicos') }}" class="btn btn-secondary mt-3">Cancelar</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}

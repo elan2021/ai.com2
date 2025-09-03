@@ -20,18 +20,20 @@
         </div>
 
         <ul class="list-unstyled components">
-            <p>Menu Principal</p>
             <li class="active">
-                <a href="#">Dashboard</a>
+                <a href="{{ url_for('dashboard.index') }}"><i class="bi bi-speedometer2 me-2"></i><span>Dashboard</span></a>
             </li>
             <li>
-                <a href="#">Produtos</a>
+                <a href="#"><i class="bi bi-box-seam me-2"></i><span>Produtos</span></a>
             </li>
             <li>
-                <a href="#">Pedidos</a>
+                <a href="#"><i class="bi bi-receipt me-2"></i><span>Pedidos</span></a>
             </li>
             <li>
-                <a href="#">Clientes</a>
+                <a href="#"><i class="bi bi-people me-2"></i><span>Clientes</span></a>
+            </li>
+            <li>
+                <a href="{{ url_for('profile.edit_profile') }}"><i class="bi bi-person-circle me-2"></i><span>Perfil</span></a>
             </li>
         </ul>
     </nav>
@@ -47,12 +49,12 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="https://via.placeholder.com/30" class="rounded-circle" alt="user_thumb">
-                                {{ current_user.nome }}
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="{{ url_for('static', filename='profile_pics/' + current_user.image_file) }}" class="rounded-circle me-2" alt="user_thumb" style="width: 30px; height: 30px; object-fit: cover;">
+                                <span>{{ current_user.nome }}</span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="#">Perfil</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('profile.edit_profile') }}">Perfil</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
                             </ul>

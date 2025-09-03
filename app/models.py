@@ -11,6 +11,7 @@ class Proprietario(UserMixin, db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     whatsapp = db.Column(db.String(20), nullable=False)
+    image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
 
     lojas = db.relationship('Loja', backref='proprietario', lazy=True)
 

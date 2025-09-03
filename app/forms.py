@@ -1,7 +1,9 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
+from flask_wtf.file import FileField, FileAllowed
 from wtforms.validators import DataRequired, EqualTo, Length, ValidationError
 from .models import Proprietario, Loja
+from flask_login import current_user
 
 class LoginForm(FlaskForm):
     """Formulário de login."""
@@ -36,3 +38,17 @@ class LojaForm(FlaskForm):
         loja = Loja.query.filter_by(dominio=dominio.data).first()
         if loja:
             raise ValidationError('Este domínio já está em uso. Por favor, escolha outro.')
+
+class UpdateAccountForm(FlaskForm):
+    """Formulário para atualizar dados da conta."""
+    nome = StringField('Nome Completo', validators=[DataRequired(), Length(min=3, max=100)])
+    whatsapp = StringField('WhatsApp', validators=[DataRequired(), Length(min=10, max=20)])
+    picture = FileField('Atualizar Foto de Perfil', validators=[FileAllowed(['jpg', 'png', 'jpeg'])])
+    submit_account = SubmitField('Atualizar Dados')
+
+class ChangePasswordForm(FlaskForm):
+    """Formulário para alterar a senha."""
+    current_password = PasswordField('Senha Atual', validators=[DataRequired()])
+    new_password = PasswordField('Nova Senha', validators=[DataRequired(), Length(min=6)])
+    confirm_new_password = PasswordField('Confirmar Nova Senha', validators=[DataRequired(), EqualTo('new_password', message='As senhas devem ser iguais.')])
+    submit_password = SubmitField('Alterar Senha')

@@ -1,0 +1,68 @@
+{% extends "dashboard/layout.html" %}
+
+{% block dashboard_content %}
+    <h2>Editar Perfil</h2>
+    <div class="row mt-4">
+        <!-- Coluna da Esquerda: Foto e Formulário de Conta -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Dados da Conta</h4>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <img src="{{ image_file }}" alt="Foto de Perfil" class="rounded-circle" style="width: 125px; height: 125px; object-fit: cover;">
+                    </div>
+                    <form method="POST" action="{{ url_for('profile.edit_profile') }}" enctype="multipart/form-data">
+                        {{ account_form.hidden_tag() }}
+                        <div class="mb-3">
+                            {{ account_form.nome.label(class="form-label") }}
+                            {{ account_form.nome(class="form-control") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ account_form.whatsapp.label(class="form-label") }}
+                            {{ account_form.whatsapp(class="form-control") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ account_form.picture.label(class="form-label") }}
+                            {{ account_form.picture(class="form-control") }}
+                            {% if account_form.picture.errors %}
+                                {% for error in account_form.picture.errors %}
+                                    <span class="text-danger">{{ error }}</span>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        {{ account_form.submit_account(class="btn btn-primary") }}
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coluna da Direita: Formulário de Senha -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Alterar Senha</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('profile.edit_profile') }}">
+                        {{ password_form.hidden_tag() }}
+                        <div class="mb-3">
+                            {{ password_form.current_password.label(class="form-label") }}
+                            {{ password_form.current_password(class="form-control") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ password_form.new_password.label(class="form-label") }}
+                            {{ password_form.new_password(class="form-control") }}
+                        </div>
+                        <div class="mb-3">
+                            {{ password_form.confirm_new_password.label(class="form-label") }}
+                            {{ password_form.confirm_new_password(class="form-control") }}
+                        </div>
+                        {{ password_form.submit_password(class="btn btn-danger") }}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

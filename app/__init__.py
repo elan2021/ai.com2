@@ -38,12 +38,14 @@ def create_app():
         from .auth_routes import auth_bp
         from .loja_routes import loja_bp
         from .dashboard_routes import dashboard_bp
+        from .profile_routes import profile_bp
 
         # Register Blueprints
         app.register_blueprint(main_bp)
         app.register_blueprint(auth_bp)
         app.register_blueprint(loja_bp)
         app.register_blueprint(dashboard_bp)
+        app.register_blueprint(profile_bp)
 
         # Create database tables for our models
         db.create_all()

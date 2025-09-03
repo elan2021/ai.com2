@@ -8,7 +8,7 @@ dashboard_bp = Blueprint('dashboard', __name__, url_prefix='/dashboard')
 def index():
     # Por enquanto, apenas renderiza a página de boas-vindas.
     # A lógica para selecionar a loja pode ser adicionada aqui depois.
-    loja = current_user.lojas[0] if current_user.lojas else None
+    loja = current_user.owned_lojas[0] if current_user.owned_lojas else None
     if not loja:
         # Isso não deveria acontecer se o fluxo de login estiver correto, mas é uma segurança
         return redirect(url_for('loja.criar_loja'))

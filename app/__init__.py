@@ -26,11 +26,11 @@ def create_app():
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
 
-    from .models import Proprietario
+    from .models import User
 
     @login_manager.user_loader
     def load_user(user_id):
-        return Proprietario.query.get(int(user_id))
+        return User.query.get(int(user_id))
 
     with app.app_context():
         # Import parts of our application
@@ -39,6 +39,7 @@ def create_app():
         from .loja_routes import loja_bp
         from .dashboard_routes import dashboard_bp
         from .profile_routes import profile_bp
+        from .profissionais_routes import profissionais_bp
 
         # Register Blueprints
         app.register_blueprint(main_bp)
@@ -46,6 +47,7 @@ def create_app():
         app.register_blueprint(loja_bp)
         app.register_blueprint(dashboard_bp)
         app.register_blueprint(profile_bp)
+        app.register_blueprint(profissionais_bp)
 
         # Create database tables for our models
         db.create_all()

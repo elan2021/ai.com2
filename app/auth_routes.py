@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from .forms import LoginForm, CadastroForm
-from .models import Proprietario
+from .models import User
 from . import db
 from flask_login import login_user, logout_user, login_required, current_user
 
@@ -17,20 +17,15 @@ def login():
 
     # Lógica de Cadastro
     if 'cadastro-submit' in request.form and cadastro_form.validate_on_submit():
-        # Lógica de cadastro
-        username = cadastro_form.username.data
-        nome = cadastro_form.nome.data
-        password = cadastro_form.password.data
-        whatsapp = cadastro_form.whatsapp.data
-
-        # Cria novo proprietário
-        novo_proprietario = Proprietario(
-            username=username,
-            nome=nome,
-            whatsapp=whatsapp
+        # Cria novo usuário com a role 'proprietario'
+        new_user = User(
+            username=cadastro_form.username.data,
+            nome=cadastro_form.nome.data,
+            whatsapp=cadastro_form.whatsapp.data,
+            role='proprietario'
         )
-        novo_proprietario.set_password(password)
-        db.session.add(novo_proprietario)
+        new_user.set_password(cadastro_form.password.data)
+        db.session.add(new_user)
         db.session.commit()
 
         flash('Cadastro realizado com sucesso! Faça o login.', 'success')
@@ -38,16 +33,21 @@ def login():
 
     # Lógica de Login
     if 'login-submit' in request.form and login_form.validate_on_submit():
-        user = Proprietario.query.filter_by(username=login_form.username.data).first()
+        user = User.query.filter_by(username=login_form.username.data).first()
         if user and user.check_password(login_form.password.data):
             login_user(user)
-            # Verifica se o usuário tem lojas
-            if not user.lojas:
-                flash('Login bem-sucedido! Agora, crie sua primeira loja.', 'info')
-                return redirect(url_for('loja.criar_loja'))
+            # Apenas proprietários podem ter lojas e acessar o dashboard principal
+            if user.role == 'proprietario':
+                if not user.owned_lojas:
+                    flash('Login bem-sucedido! Agora, crie sua primeira loja.', 'info')
+                    return redirect(url_for('loja.criar_loja'))
+                else:
+                    flash('Login bem-sucedido!', 'success')
+                    return redirect(url_for('dashboard.index'))
             else:
-                flash('Login bem-sucedido!', 'success')
-                return redirect(url_for('dashboard.index'))
+                # Futuramente, redirecionar para o dashboard do profissional
+                flash('Login de profissional bem-sucedido!', 'success')
+                return redirect(url_for('main.index')) # Placeholder
         else:
             flash('Usuário ou senha inválidos.', 'danger')
 

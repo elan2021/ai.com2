@@ -1,0 +1,43 @@
+{% extends "dashboard/layout.html" %}
+
+{% block dashboard_content %}
+    <h2>{{ title }}: {{ profissional_user.nome }}</h2>
+    <div class="card mt-4">
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('profissionais.editar_profissional', user_id=profissional_user.id) }}">
+                {{ form.hidden_tag() }}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.nome.label(class="form-label") }}
+                        {{ form.nome(class="form-control") }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.whatsapp.label(class="form-label") }}
+                        {{ form.whatsapp(class="form-control") }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label">Nome de Usuário</label>
+                        <input type="text" class="form-control" value="{{ profissional_user.username }}" readonly disabled>
+                        <div class="form-text">O nome de usuário não pode ser alterado.</div>
+                    </div>
+                </div>
+                <div class="line"></div>
+                <h4>Detalhes da Comissão</h4>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.comissao_tipo.label(class="form-label") }}
+                        {{ form.comissao_tipo(class="form-select") }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.comissao_valor.label(class="form-label") }}
+                        {{ form.comissao_valor(class="form-control") }}
+                    </div>
+                </div>
+                {{ form.submit(class="btn btn-primary mt-3") }}
+                <a href="{{ url_for('profissionais.listar_profissionais') }}" class="btn btn-secondary mt-3">Cancelar</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}

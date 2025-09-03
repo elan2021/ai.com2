@@ -35,6 +35,20 @@
             <li>
                 <a href="{{ url_for('profile.edit_profile') }}"><i class="bi bi-person-circle me-2"></i><span>Perfil</span></a>
             </li>
+            <li>
+                <a href="#profissionaisSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-people-fill me-2"></i><span>Profissionais</span></span>
+                    <i class="bi bi-chevron-down"></i>
+                </a>
+                <ul class="collapse list-unstyled" id="profissionaisSubmenu">
+                    <li>
+                        <a href="{{ url_for('profissionais.adicionar_profissional') }}"><span>Adicionar</span></a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('profissionais.listar_profissionais') }}"><span>Todos</span></a>
+                    </li>
+                </ul>
+            </li>
         </ul>
     </nav>
 

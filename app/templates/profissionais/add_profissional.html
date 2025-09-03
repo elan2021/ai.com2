@@ -1,0 +1,51 @@
+{% extends "dashboard/layout.html" %}
+
+{% block dashboard_content %}
+    <h2>{{ title }}</h2>
+    <div class="card mt-4">
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('profissionais.adicionar_profissional') }}">
+                {{ form.hidden_tag() }}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.nome.label(class="form-label") }}
+                        {{ form.nome(class="form-control") }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.whatsapp.label(class="form-label") }}
+                        {{ form.whatsapp(class="form-control") }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.username.label(class="form-label") }}
+                        {{ form.username(class="form-control") }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.password.label(class="form-label") }}
+                        {{ form.password(class="form-control") }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.confirm_password.label(class="form-label") }}
+                        {{ form.confirm_password(class="form-control") }}
+                    </div>
+                </div>
+                <div class="line"></div>
+                <h4>Detalhes da Comissão</h4>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.comissao_tipo.label(class="form-label") }}
+                        {{ form.comissao_tipo(class="form-select") }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.comissao_valor.label(class="form-label") }}
+                        {{ form.comissao_valor(class="form-control") }}
+                    </div>
+                </div>
+                {{ form.submit(class="btn btn-primary mt-3") }}
+            </form>
+        </div>
+    </div>
+{% endblock %}

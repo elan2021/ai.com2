@@ -56,6 +56,21 @@ a, a:hover, a:focus {
     background: #6d7fcc;
 }
 
+#sidebar ul ul a {
+    font-size: 0.9em !important;
+    padding-left: 30px !important;
+    background: #6d7fcc;
+}
+
+/* When sidebar is active, hide the dropdown arrow and submenu */
+#sidebar.active .dropdown-toggle .bi-chevron-down {
+    display: none;
+}
+
+#sidebar.active ul.collapse {
+    display: none !important;
+}
+
 /* --- Collapsed Sidebar Styles --- */
 #sidebar.active {
     min-width: 80px;

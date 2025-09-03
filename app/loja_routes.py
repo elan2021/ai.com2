@@ -11,7 +11,7 @@ loja_bp = Blueprint('loja', __name__, url_prefix='/loja')
 def criar_loja():
     # Se o usuário já tem uma loja, não deveria estar aqui. Redireciona para o dashboard.
     # (Essa lógica será mais robusta depois)
-    if current_user.lojas:
+    if current_user.owned_lojas:
         return redirect(url_for('dashboard.index'))
 
     form = LojaForm()
@@ -20,7 +20,7 @@ def criar_loja():
             nome=form.nome.data,
             telefone=form.telefone.data,
             dominio=form.dominio.data,
-            proprietario_id=current_user.id
+            owner_id=current_user.id
         )
         db.session.add(nova_loja)
         db.session.commit()

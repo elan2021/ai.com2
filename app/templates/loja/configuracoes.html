@@ -1,0 +1,44 @@
+{% extends "dashboard/layout.html" %}
+
+{% block dashboard_content %}
+    <h2>{{ title }}</h2>
+    <div class="card mt-4">
+        <div class="card-header">
+            <h4>Chave de API (API Key)</h4>
+        </div>
+        <div class="card-body">
+            <p>Use esta chave para integrar sua loja com sistemas externos através da nossa API.</p>
+            <p><strong>Atenção:</strong> Trate esta chave como uma senha. Não a compartilhe publicamente.</p>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" value="{{ loja.api_key }}" readonly id="apiKeyInput">
+                <button class="btn btn-outline-secondary" type="button" id="copyApiKeyBtn">
+                    <i class="bi bi-clipboard"></i> Copiar
+                </button>
+            </div>
+            <div id="copy-success" class="text-success" style="display: none;">
+                Chave copiada para a área de transferência!
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+document.getElementById('copyApiKeyBtn').addEventListener('click', function() {
+    const apiKeyInput = document.getElementById('apiKeyInput');
+    apiKeyInput.select();
+    apiKeyInput.setSelectionRange(0, 99999); // For mobile devices
+
+    navigator.clipboard.writeText(apiKeyInput.value).then(function() {
+        const successMessage = document.getElementById('copy-success');
+        successMessage.style.display = 'block';
+        setTimeout(function() {
+            successMessage.style.display = 'none';
+        }, 2000);
+    }, function(err) {
+        console.error('Erro ao copiar a chave: ', err);
+    });
+});
+</script>
+{% endblock %}

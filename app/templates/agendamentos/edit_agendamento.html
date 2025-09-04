@@ -1,0 +1,39 @@
+{% extends "dashboard/layout.html" %}
+
+{% block dashboard_content %}
+    <h2>{{ title }}</h2>
+    <div class="card mt-4">
+        <div class="card-body">
+            <form method="POST" action="">
+                {{ form.hidden_tag() }}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.cliente_nome.label(class="form-label") }}
+                        {{ form.cliente_nome(class="form-control") }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.cliente_contato.label(class="form-label") }}
+                        {{ form.cliente_contato(class="form-control") }}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    {{ form.data_hora.label(class="form-label") }}
+                    {{ form.data_hora(class="form-control") }}
+                </div>
+                <div class="line"></div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.servico.label(class="form-label") }}
+                        {{ form.servico(class="form-select") }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.profissional.label(class="form-label") }}
+                        {{ form.profissional(class="form-select") }}
+                    </div>
+                </div>
+                {{ form.submit(class="btn btn-primary mt-3") }}
+                <a href="{{ url_for('agendamentos.listar_agendamentos') }}" class="btn btn-secondary mt-3">Cancelar</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}

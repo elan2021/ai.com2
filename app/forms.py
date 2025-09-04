@@ -1,5 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField, FloatField, IntegerField, SelectMultipleField
+from wtforms.fields import DateTimeField
+from wtforms_sqlalchemy.fields import QuerySelectField
 from flask_wtf.file import FileField, FileAllowed
 from wtforms.validators import DataRequired, EqualTo, Length, ValidationError, NumberRange
 from .models import User, Loja
@@ -41,6 +43,23 @@ class ServicoForm(FlaskForm):
     duracao = IntegerField('Duração (em minutos)', validators=[DataRequired(), NumberRange(min=1)])
     preco = FloatField('Preço (R$)', validators=[DataRequired(), NumberRange(min=0)])
     submit = SubmitField('Salvar Serviço')
+
+def get_pk_from_identity(obj):
+    return obj.id if obj else None
+
+def get_profissional_label(profissional):
+    return profissional.user.nome
+
+class AddAgendamentoForm(FlaskForm):
+    """Formulário para adicionar um novo agendamento."""
+    cliente_nome = StringField('Nome do Cliente', validators=[DataRequired()])
+    cliente_contato = StringField('Contato do Cliente (Telefone/Email)')
+    data_hora = DateTimeField('Data e Hora', format='%Y-%m-%dT%H:%M', validators=[DataRequired()])
+
+    servico = QuerySelectField('Serviço', query_factory=None, get_label='nome', get_pk=get_pk_from_identity, allow_blank=True, blank_text='-- Selecione um Serviço --')
+    profissional = QuerySelectField('Profissional', query_factory=None, get_label=get_profissional_label, get_pk=get_pk_from_identity, allow_blank=True, blank_text='-- Selecione um Profissional --')
+
+    submit = SubmitField('Salvar Agendamento')
 
 class LojaForm(FlaskForm):
     """Formulário para criar/editar uma loja."""

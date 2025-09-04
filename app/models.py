@@ -1,6 +1,7 @@
 from . import db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 
 class User(UserMixin, db.Model):
     """Modelo de usuário genérico para Proprietários e Profissionais."""
@@ -41,6 +42,7 @@ class Loja(db.Model):
 
     profissionais = db.relationship('Profissional', backref='loja', lazy=True, cascade="all, delete-orphan")
     servicos = db.relationship('Servico', backref='loja', lazy=True, cascade="all, delete-orphan")
+    agendamentos = db.relationship('Agendamento', backref='loja', lazy=True, cascade="all, delete-orphan")
 
     def __repr__(self):
         return f'<Loja {self.nome}>'
@@ -64,6 +66,7 @@ class Profissional(db.Model):
 
     servicos = db.relationship('Servico', secondary=profissional_servico_association,
                                back_populates='profissionais', lazy='dynamic')
+    agendamentos = db.relationship('Agendamento', backref='profissional', lazy=True)
 
     def __repr__(self):
         return f'<Profissional Profile for User {self.user_id}>'
@@ -80,6 +83,25 @@ class Servico(db.Model):
 
     profissionais = db.relationship('Profissional', secondary=profissional_servico_association,
                                     back_populates='servicos', lazy='dynamic')
+    agendamentos = db.relationship('Agendamento', backref='servico', lazy=True)
 
     def __repr__(self):
         return f'<Servico {self.nome}>'
+
+class Agendamento(db.Model):
+    """Model para os agendamentos."""
+    __tablename__ = 'agendamentos'
+
+    id = db.Column(db.Integer, primary_key=True)
+    data_hora_inicio = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    data_hora_fim = db.Column(db.DateTime, nullable=False)
+    status = db.Column(db.String(20), nullable=False, default='agendado') # agendado, concluido, cancelado
+    cliente_nome = db.Column(db.String(100), nullable=False)
+    cliente_contato = db.Column(db.String(100), nullable=True)
+
+    loja_id = db.Column(db.Integer, db.ForeignKey('lojas.id'), nullable=False)
+    profissional_id = db.Column(db.Integer, db.ForeignKey('profissionais.id'), nullable=False)
+    servico_id = db.Column(db.Integer, db.ForeignKey('servicos.id'), nullable=False)
+
+    def __repr__(self):
+        return f'<Agendamento {self.id} em {self.data_hora_inicio}>'

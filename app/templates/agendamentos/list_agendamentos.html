@@ -1,0 +1,62 @@
+{% extends "dashboard/layout.html" %}
+
+{% block dashboard_content %}
+    <div class="d-flex justify-content-between align-items-center">
+        <h2>{{ title }}</h2>
+        <a href="{{ url_for('agendamentos.adicionar_agendamento') }}" class="btn btn-success">
+            <i class="bi bi-plus-circle me-1"></i> Novo Agendamento
+        </a>
+    </div>
+    <div class="card mt-4">
+        <div class="card-body">
+            {% if agendamentos %}
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Data/Hora</th>
+                        <th scope="col">Cliente</th>
+                        <th scope="col">Serviço</th>
+                        <th scope="col">Profissional</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for agendamento in agendamentos %}
+                    <tr>
+                        <td>{{ agendamento.data_hora_inicio.strftime('%d/%m/%Y %H:%M') }}</td>
+                        <td>{{ agendamento.cliente_nome }}</td>
+                        <td>{{ agendamento.servico.nome }}</td>
+                        <td>{{ agendamento.profissional.user.nome }}</td>
+                        <td>
+                            {% if agendamento.status == 'agendado' %}
+                                <span class="badge bg-primary">Agendado</span>
+                            {% elif agendamento.status == 'concluido' %}
+                                <span class="badge bg-success">Concluído</span>
+                            {% elif agendamento.status == 'cancelado' %}
+                                <span class="badge bg-danger">Cancelado</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ agendamento.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('agendamentos.editar_agendamento', agendamento_id=agendamento.id) }}" class="btn btn-sm btn-primary">Editar</a>
+                            {% if agendamento.status != 'cancelado' %}
+                            <form action="{{ url_for('agendamentos.cancelar_agendamento', agendamento_id=agendamento.id) }}" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-warning" onclick="return confirm('Tem certeza que deseja cancelar este agendamento?')">Cancelar</button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="text-center">
+                <p>Nenhum agendamento encontrado.</p>
+                <a href="#" class="btn btn-primary">Criar seu primeiro agendamento</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

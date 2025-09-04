@@ -1,15 +1,95 @@
 {% extends "dashboard/layout.html" %}
 
 {% block dashboard_content %}
-    <h2>Bem-vindo ao Dashboard da {{ loja.nome }}!</h2>
-    <p>Este é o painel de controle da sua loja. Use o menu à esquerda para navegar pelas funcionalidades.</p>
+    <h2>Dashboard da Loja: {{ loja.nome }}</h2>
 
     <div class="line"></div>
+    <h4>Receita</h4>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-header">Hoje</div>
+                <div class="card-body"><h5 class="card-title">R$ {{ "%.2f"|format(stats.receita_hoje) }}</h5></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-header">Últimos 7 Dias</div>
+                <div class="card-body"><h5 class="card-title">R$ {{ "%.2f"|format(stats.receita_7_dias) }}</h5></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-header">Últimos 15 Dias</div>
+                <div class="card-body"><h5 class="card-title">R$ {{ "%.2f"|format(stats.receita_15_dias) }}</h5></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-header">Mês (30 dias)</div>
+                <div class="card-body"><h5 class="card-title">R$ {{ "%.2f"|format(stats.receita_mes) }}</h5></div>
+            </div>
+        </div>
+    </div>
 
-    <h4>Informações da Loja:</h4>
-    <ul>
-        <li><strong>Nome:</strong> {{ loja.nome }}</li>
-        <li><strong>Telefone:</strong> {{ loja.telefone }}</li>
-        <li><strong>Domínio:</strong> <a href="#">seudominio.com/{{ loja.dominio }}</a></li>
-    </ul>
+    <div class="line"></div>
+    <h4>Agendamentos</h4>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-header">Concluídos</div>
+                <div class="card-body"><h5 class="card-title">{{ stats.agendamentos_concluidos }}</h5></div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-dark bg-warning mb-3">
+                <div class="card-header">Pendentes</div>
+                <div class="card-body"><h5 class="card-title">{{ stats.agendamentos_pendentes }}</h5></div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-danger mb-3">
+                <div class="card-header">Cancelados</div>
+                <div class="card-body"><h5 class="card-title">{{ stats.agendamentos_cancelados }}</h5></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="line"></div>
+    <div class="row">
+        <div class="col-md-8">
+            <h4>Top 5 Profissionais (por Lucro)</h4>
+            <div class="card">
+                <div class="card-body">
+                    {% if stats.top_profissionais %}
+                    <ul class="list-group list-group-flush">
+                        {% for prof in stats.top_profissionais %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ prof.nome }}
+                            <span class="badge bg-info rounded-pill">R$ {{ "%.2f"|format(prof.lucro) }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p>Nenhum dado de lucro para exibir.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <h4>Comissões</h4>
+            <div class="card bg-light mb-3">
+                <div class="card-header">Pendentes</div>
+                <div class="card-body">
+                    <h5 class="card-title text-danger">R$ {{ "%.2f"|format(stats.comissoes_pendentes) }}</h5>
+                </div>
+            </div>
+            <div class="card bg-light mb-3">
+                <div class="card-header">Pagas</div>
+                <div class="card-body">
+                    <h5 class="card-title text-success">R$ {{ "%.2f"|format(stats.comissoes_pagas) }}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

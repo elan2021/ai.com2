@@ -47,9 +47,9 @@ class ServicoForm(FlaskForm):
     submit = SubmitField('Salvar Serviço')
 
     def __init__(self, *args, **kwargs):
+        profissionais_choices = kwargs.pop('profissionais_choices', [])
         super(ServicoForm, self).__init__(*args, **kwargs)
-        if 'profissionais_choices' in kwargs:
-            self.profissionais.choices = kwargs['profissionais_choices']
+        self.profissionais.choices = profissionais_choices
 
 def get_pk_from_identity(obj):
     return obj.id if obj else None

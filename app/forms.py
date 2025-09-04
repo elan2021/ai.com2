@@ -4,7 +4,7 @@ from wtforms.fields import DateTimeField, TimeField
 from wtforms.form import Form
 from wtforms_sqlalchemy.fields import QuerySelectField
 from flask_wtf.file import FileField, FileAllowed
-from wtforms.validators import DataRequired, EqualTo, Length, ValidationError, NumberRange
+from wtforms.validators import DataRequired, EqualTo, Length, ValidationError, NumberRange, Optional
 from .models import User, Loja
 from flask_login import current_user
 
@@ -70,11 +70,11 @@ class AddAgendamentoForm(FlaskForm):
 
 class HorarioDiaForm(Form):
     """Sub-formulário para os horários de um único dia."""
-    horario_inicio = TimeField('Início', format='%H:%M')
-    horario_fim = TimeField('Fim', format='%H:%M')
-    almoco_inicio = TimeField('Início Almoço', format='%H:%M')
-    almoco_fim = TimeField('Fim Almoço', format='%H:%M')
-    pausa_entre_atendimentos = IntegerField('Pausa (min)')
+    horario_inicio = TimeField('Início', format='%H:%M', validators=[Optional()])
+    horario_fim = TimeField('Fim', format='%H:%M', validators=[Optional()])
+    almoco_inicio = TimeField('Início Almoço', format='%H:%M', validators=[Optional()])
+    almoco_fim = TimeField('Fim Almoço', format='%H:%M', validators=[Optional()])
+    pausa_entre_atendimentos = IntegerField('Pausa (min)', validators=[Optional(), NumberRange(min=0)])
     e_folga = BooleanField('Folga')
 
 class GerenciarHorariosForm(FlaskForm):

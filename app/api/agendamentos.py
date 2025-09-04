@@ -38,7 +38,8 @@ agendamento_post_parser = api.parser()
 agendamento_post_parser.add_argument('cliente_id', type=int, required=True, help='ID do Cliente', location='json')
 agendamento_post_parser.add_argument('profissional_id', type=int, required=True, help='ID do Profissional', location='json')
 agendamento_post_parser.add_argument('servico_id', type=int, required=True, help='ID do Serviço', location='json')
-agendamento_post_parser.add_argument('data_hora_inicio', type=str, required=True, help='Data e hora de início (YYYY-MM-DD HH:MM:SS)', location='json')
+agendamento_post_parser.add_argument('data', type=str, required=True, help='Data do agendamento (YYYY-MM-DD)', location='json')
+agendamento_post_parser.add_argument('hora_inicio', type=str, required=True, help='Hora de início do agendamento (HH:MM)', location='json')
 
 agendamento_put_parser = api.parser()
 agendamento_put_parser.add_argument('status', type=str, required=True, choices=('confirmado', 'cancelado'), help='Novo status do agendamento', location='json')
@@ -64,7 +65,11 @@ class AgendamentoList(Resource):
             api.abort(400, 'Este profissional não realiza o serviço selecionado.')
 
         # Lógica de criação
-        inicio = datetime.fromisoformat(args['data_hora_inicio'])
+        try:
+            inicio = datetime.strptime(f"{args['data']} {args['hora_inicio']}", '%Y-%m-%d %H:%M')
+        except ValueError:
+            api.abort(400, "Formato de data ou hora inválido. Use YYYY-MM-DD e HH:MM.")
+
         fim = inicio + timedelta(minutes=servico.duracao)
 
         novo_agendamento = Agendamento(

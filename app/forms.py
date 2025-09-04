@@ -46,6 +46,11 @@ class ServicoForm(FlaskForm):
     profissionais = SelectMultipleField('Profissionais que realizam este serviço', coerce=int)
     submit = SubmitField('Salvar Serviço')
 
+    def __init__(self, *args, **kwargs):
+        super(ServicoForm, self).__init__(*args, **kwargs)
+        if 'profissionais_choices' in kwargs:
+            self.profissionais.choices = kwargs['profissionais_choices']
+
 def get_pk_from_identity(obj):
     return obj.id if obj else None
 

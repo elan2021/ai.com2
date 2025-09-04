@@ -31,8 +31,8 @@ def listar_servicos():
 @proprietario_required
 def adicionar_servico():
     loja = current_user.owned_lojas[0]
-    form = ServicoForm()
-    form.profissionais.choices = [(p.id, p.user.nome) for p in Profissional.query.filter_by(loja_id=loja.id).all()]
+    profissionais_choices = [(p.id, p.user.nome) for p in Profissional.query.filter_by(loja_id=loja.id).all()]
+    form = ServicoForm(profissionais_choices=profissionais_choices)
 
     if form.validate_on_submit():
         novo_servico = Servico(
@@ -60,8 +60,8 @@ def editar_servico(servico_id):
     if servico.loja not in current_user.owned_lojas:
         abort(403)
 
-    form = ServicoForm()
-    form.profissionais.choices = [(p.id, p.user.nome) for p in Profissional.query.filter_by(loja_id=servico.loja_id).all()]
+    profissionais_choices = [(p.id, p.user.nome) for p in Profissional.query.filter_by(loja_id=servico.loja_id).all()]
+    form = ServicoForm(profissionais_choices=profissionais_choices)
 
     if form.validate_on_submit():
         servico.nome = form.nome.data

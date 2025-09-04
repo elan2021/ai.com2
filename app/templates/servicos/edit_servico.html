@@ -23,14 +23,20 @@
                 <div class="line"></div>
                 <div class="mb-3">
                     {{ form.profissionais.label(class="form-label") }}
-                    <div class="form-check">
-                        {% for subfield in form.profissionais %}
-                            <div class="form-check">
-                                {{ subfield(class="form-check-input") }}
-                                {{ subfield.label(class="form-check-label") }}
-                            </div>
-                        {% endfor %}
-                    </div>
+                    {% if form.profissionais.choices %}
+                        <div class="form-check">
+                            {% for subfield in form.profissionais %}
+                                <div class="form-check">
+                                    {{ subfield(class="form-check-input") }}
+                                    {{ subfield.label(class="form-check-label") }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            Nenhum profissional cadastrado. <a href="{{ url_for('profissionais.adicionar_profissional') }}" class="alert-link">Adicione um profissional</a> antes de cadastrar um serviço.
+                        </div>
+                    {% endif %}
                 </div>
                 {{ form.submit(class="btn btn-primary mt-3") }}
                 <a href="{{ url_for('servicos.listar_servicos') }}" class="btn btn-secondary mt-3">Cancelar</a>

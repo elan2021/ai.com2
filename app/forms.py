@@ -43,6 +43,7 @@ class ServicoForm(FlaskForm):
     nome = StringField('Nome do Serviço', validators=[DataRequired(), Length(max=100)])
     duracao = IntegerField('Duração (em minutos)', validators=[DataRequired(), NumberRange(min=1)])
     preco = FloatField('Preço (R$)', validators=[DataRequired(), NumberRange(min=0)])
+    profissionais = SelectMultipleField('Profissionais que realizam este serviço', coerce=int)
     submit = SubmitField('Salvar Serviço')
 
 def get_pk_from_identity(obj):

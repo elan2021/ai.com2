@@ -20,6 +20,18 @@
                         {{ form.preco(class="form-control") }}
                     </div>
                 </div>
+                <div class="line"></div>
+                <div class="mb-3">
+                    {{ form.profissionais.label(class="form-label") }}
+                    <div class="form-check">
+                        {% for subfield in form.profissionais %}
+                            <div class="form-check">
+                                {{ subfield(class="form-check-input") }}
+                                {{ subfield.label(class="form-check-label") }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
                 {{ form.submit(class="btn btn-primary mt-3") }}
                 <a href="{{ url_for('servicos.listar_servicos') }}" class="btn btn-secondary mt-3">Cancelar</a>
             </form>

@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, abort, request
 from flask_login import login_required, current_user
 from .forms import ServicoForm
-from .models import Servico
+from .models import Servico, Profissional
 from . import db
 from functools import wraps
 
@@ -30,15 +30,21 @@ def listar_servicos():
 @login_required
 @proprietario_required
 def adicionar_servico():
+    loja = current_user.owned_lojas[0]
     form = ServicoForm()
+    form.profissionais.choices = [(p.id, p.user.nome) for p in Profissional.query.filter_by(loja_id=loja.id).all()]
+
     if form.validate_on_submit():
-        loja = current_user.owned_lojas[0]
         novo_servico = Servico(
             nome=form.nome.data,
             duracao=form.duracao.data,
             preco=form.preco.data,
             loja_id=loja.id
         )
+        for profissional_id in form.profissionais.data:
+            profissional = Profissional.query.get(profissional_id)
+            novo_servico.profissionais.append(profissional)
+
         db.session.add(novo_servico)
         db.session.commit()
         flash('Serviço adicionado com sucesso!', 'success')
@@ -55,10 +61,18 @@ def editar_servico(servico_id):
         abort(403)
 
     form = ServicoForm()
+    form.profissionais.choices = [(p.id, p.user.nome) for p in Profissional.query.filter_by(loja_id=servico.loja_id).all()]
+
     if form.validate_on_submit():
         servico.nome = form.nome.data
         servico.duracao = form.duracao.data
         servico.preco = form.preco.data
+
+        servico.profissionais = []
+        for profissional_id in form.profissionais.data:
+            profissional = Profissional.query.get(profissional_id)
+            servico.profissionais.append(profissional)
+
         db.session.commit()
         flash('Serviço atualizado com sucesso!', 'success')
         return redirect(url_for('servicos.listar_servicos'))
@@ -67,6 +81,7 @@ def editar_servico(servico_id):
         form.nome.data = servico.nome
         form.duracao.data = servico.duracao
         form.preco.data = servico.preco
+        form.profissionais.data = [p.id for p in servico.profissionais]
 
     return render_template('servicos/edit_servico.html', title='Editar Serviço', form=form)
 

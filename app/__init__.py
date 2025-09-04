@@ -43,6 +43,7 @@ def create_app():
         from .servicos_routes import servicos_bp
         from .agendamentos_routes import agendamentos_bp
         from .comissoes_routes import comissoes_bp
+        from .api import api_bp as api_blueprint
 
         # Register Blueprints
         app.register_blueprint(main_bp)
@@ -54,6 +55,7 @@ def create_app():
         app.register_blueprint(servicos_bp)
         app.register_blueprint(agendamentos_bp)
         app.register_blueprint(comissoes_bp)
+        app.register_blueprint(api_blueprint)
 
         # Create database tables for our models
         db.create_all()

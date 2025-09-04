@@ -1,3 +1,4 @@
+import secrets
 from . import db
 from flask_login import UserMixin
 from sqlalchemy import Time
@@ -39,11 +40,13 @@ class Loja(db.Model):
     nome = db.Column(db.String(100), nullable=False)
     telefone = db.Column(db.String(20), nullable=False)
     dominio = db.Column(db.String(100), unique=True, nullable=False)
+    api_key = db.Column(db.String(32), unique=True, nullable=False, default=lambda: secrets.token_hex(16))
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
     profissionais = db.relationship('Profissional', backref='loja', lazy=True, cascade="all, delete-orphan")
     servicos = db.relationship('Servico', backref='loja', lazy=True, cascade="all, delete-orphan")
     agendamentos = db.relationship('Agendamento', backref='loja', lazy=True, cascade="all, delete-orphan")
+    clientes = db.relationship('Cliente', backref='loja', lazy=True, cascade="all, delete-orphan")
 
     def __repr__(self):
         return f'<Loja {self.nome}>'
@@ -144,3 +147,15 @@ class Comissao(db.Model):
 
     def __repr__(self):
         return f'<Comissao {self.id} - R${self.valor}>'
+
+class Cliente(db.Model):
+    """Model para os clientes da loja."""
+    __tablename__ = 'clientes'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(100), nullable=False)
+    telefone = db.Column(db.String(20), nullable=False)
+    loja_id = db.Column(db.Integer, db.ForeignKey('lojas.id'), nullable=False)
+
+    def __repr__(self):
+        return f'<Cliente {self.nome}>'

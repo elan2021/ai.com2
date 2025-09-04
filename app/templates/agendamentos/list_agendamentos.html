@@ -40,8 +40,11 @@
                             {% endif %}
                         </td>
                         <td>
-                            <a href="{{ url_for('agendamentos.editar_agendamento', agendamento_id=agendamento.id) }}" class="btn btn-sm btn-primary">Editar</a>
-                            {% if agendamento.status != 'cancelado' %}
+                            <a href="{{ url_for('agendamentos.editar_agendamento', agendamento_id=agendamento.id) }}" class="btn btn-sm btn-outline-primary">Editar</a>
+                            {% if agendamento.status == 'agendado' %}
+                            <form action="{{ url_for('agendamentos.concluir_agendamento', agendamento_id=agendamento.id) }}" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-success">Concluir</button>
+                            </form>
                             <form action="{{ url_for('agendamentos.cancelar_agendamento', agendamento_id=agendamento.id) }}" method="POST" class="d-inline">
                                 <button type="submit" class="btn btn-sm btn-warning" onclick="return confirm('Tem certeza que deseja cancelar este agendamento?')">Cancelar</button>
                             </form>

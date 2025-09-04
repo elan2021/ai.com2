@@ -107,3 +107,16 @@ def cancelar_agendamento(agendamento_id):
     db.session.commit()
     flash('Agendamento cancelado com sucesso.', 'info')
     return redirect(url_for('agendamentos.listar_agendamentos'))
+
+@agendamentos_bp.route('/concluir/<int:agendamento_id>', methods=['POST'])
+@login_required
+@proprietario_required
+def concluir_agendamento(agendamento_id):
+    agendamento = Agendamento.query.get_or_404(agendamento_id)
+    if agendamento.loja not in current_user.owned_lojas:
+        abort(403)
+
+    agendamento.status = 'concluido'
+    db.session.commit()
+    flash('Agendamento marcado como concluído!', 'success')
+    return redirect(url_for('agendamentos.listar_agendamentos'))

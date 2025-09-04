@@ -1,8 +1,67 @@
 {% extends "profissionais/dashboard_layout.html" %}
 
 {% block professional_dashboard_content %}
-    <h2>Bem-vindo, {{ current_user.nome }}!</h2>
-    <p>Este é o seu painel de profissional.</p>
+    <h2>{{ title }}</h2>
+
+    <!-- Cards de Resumo -->
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-header">Próximos Agendamentos</div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ proximos|length }}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-header">Comissões Pendentes</div>
+                <div class="card-body">
+                    <h5 class="card-title">R$ {{ "%.2f"|format(total_comissao) }}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-header">Agendamentos Concluídos</div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ concluidos|length }}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="line"></div>
-    <p>Funcionalidades como seus agendamentos e comissões aparecerão aqui em breve.</p>
+
+    <!-- Tabela de Próximos Agendamentos -->
+    <h4>Próximos Agendamentos</h4>
+    <div class="card mt-3">
+        <div class="card-body">
+            {% if proximos %}
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Data/Hora</th>
+                        <th>Cliente</th>
+                        <th>Serviço</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for agendamento in proximos %}
+                    <tr>
+                        <td>{{ agendamento.data_hora_inicio.strftime('%d/%m/%Y %H:%M') }}</td>
+                        <td>{{ agendamento.cliente_nome }}</td>
+                        <td>{{ agendamento.servico.nome }}</td>
+                        <td><span class="badge bg-primary">{{ agendamento.status }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="text-center">Nenhum próximo agendamento encontrado.</p>
+            {% endif %}
+        </div>
+    </div>
+
 {% endblock %}

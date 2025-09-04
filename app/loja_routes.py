@@ -5,6 +5,7 @@ from flask_login import login_required, current_user
 from .forms import LojaForm
 from .models import Loja
 from . import db
+from functools import wraps
 
 loja_bp = Blueprint('loja', __name__, url_prefix='/loja')
 

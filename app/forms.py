@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField, FloatField, IntegerField, SelectMultipleField, BooleanField, FormField
+from wtforms import StringField, PasswordField, SubmitField, SelectField, FloatField, IntegerField, SelectMultipleField, BooleanField, FormField, FieldList
 from wtforms.fields import DateTimeField, TimeField
 from wtforms.form import Form
+from wtforms.widgets import ListWidget, CheckboxInput
 from wtforms_sqlalchemy.fields import QuerySelectField
 from flask_wtf.file import FileField, FileAllowed
 from wtforms.validators import DataRequired, EqualTo, Length, ValidationError, NumberRange, Optional
@@ -43,7 +44,9 @@ class ServicoForm(FlaskForm):
     nome = StringField('Nome do Serviço', validators=[DataRequired(), Length(max=100)])
     duracao = IntegerField('Duração (em minutos)', validators=[DataRequired(), NumberRange(min=1)])
     preco = FloatField('Preço (R$)', validators=[DataRequired(), NumberRange(min=0)])
-    profissionais = SelectMultipleField('Profissionais que realizam este serviço', coerce=int)
+    profissionais = SelectMultipleField('Profissionais que realizam este serviço', coerce=int,
+                                      widget=ListWidget(prefix_label=False),
+                                      option_widget=CheckboxInput())
     submit = SubmitField('Salvar Serviço')
 
     def __init__(self, *args, **kwargs):

@@ -25,7 +25,7 @@
                     {% for agendamento in agendamentos %}
                     <tr>
                         <td>{{ agendamento.data_hora_inicio.strftime('%d/%m/%Y %H:%M') }}</td>
-                        <td>{{ agendamento.cliente_nome }}</td>
+                        <td>{{ agendamento.cliente.nome }}</td>
                         <td>{{ agendamento.servico.nome }}</td>
                         <td>{{ agendamento.profissional.user.nome }}</td>
                         <td>

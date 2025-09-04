@@ -116,19 +116,16 @@ def dashboard_profissional():
         flash('Perfil de profissional não encontrado.', 'danger')
         return redirect(url_for('main.index'))
     now = datetime.utcnow()
-    proximos_agendamentos = Agendamento.query.filter(
-        Agendamento.profissional_id == profissional.id,
-        Agendamento.data_hora_inicio > now,
-        Agendamento.status == 'agendado'
-    ).order_by(Agendamento.data_hora_inicio.asc()).all()
-    agendamentos_concluidos = Agendamento.query.filter_by(
-        profissional_id=profissional.id,
-        status='concluido'
-    ).order_by(Agendamento.data_hora_inicio.desc()).all()
-    agendamentos_cancelados = Agendamento.query.filter_by(
-        profissional_id=profissional.id,
-        status='cancelado'
-    ).order_by(Agendamento.data_hora_inicio.desc()).all()
+    all_agendamentos = profissional.agendamentos
+
+    proximos_agendamentos = [ag for ag in all_agendamentos if ag.data_hora_inicio > now and ag.status == 'agendado']
+    proximos_agendamentos.sort(key=lambda x: x.data_hora_inicio)
+
+    agendamentos_concluidos = [ag for ag in all_agendamentos if ag.status == 'concluido']
+    agendamentos_concluidos.sort(key=lambda x: x.data_hora_inicio, reverse=True)
+
+    agendamentos_cancelados = [ag for ag in all_agendamentos if ag.status == 'cancelado']
+    agendamentos_cancelados.sort(key=lambda x: x.data_hora_inicio, reverse=True)
 
     # Calcular comissões pendentes
     total_comissao = 0

@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, abort, request
 from flask_login import login_required, current_user
-from .forms import AddProfissionalForm, EditProfissionalForm
-from .models import User, Profissional, Servico, Agendamento
+from .forms import AddProfissionalForm, EditProfissionalForm, GerenciarHorariosForm
+from .models import User, Profissional, Servico, Agendamento, HorarioTrabalho
 from . import db
 from functools import wraps
 from datetime import datetime
@@ -40,6 +40,13 @@ def adicionar_profissional():
             comissao_valor=form.comissao_valor.data
         )
         db.session.add(novo_profissional)
+        db.session.flush() # Flush para obter o ID do novo profissional
+
+        # Cria os 7 dias de horário de trabalho padrão (todos como folga)
+        for dia in range(7):
+            horario = HorarioTrabalho(dia_da_semana=dia, profissional_id=novo_profissional.id, e_folga=True)
+            db.session.add(horario)
+
         db.session.commit()
         flash('Novo profissional adicionado com sucesso!', 'success')
         return redirect(url_for('profissionais.listar_profissionais'))
@@ -137,3 +144,51 @@ def dashboard_profissional():
                            concluidos=agendamentos_concluidos,
                            cancelados=agendamentos_cancelados,
                            total_comissao=total_comissao)
+
+@profissionais_bp.route('/horarios/<int:profissional_id>', methods=['GET', 'POST'])
+@login_required
+@proprietario_required
+def gerenciar_horarios(profissional_id):
+    profissional = Profissional.query.get_or_404(profissional_id)
+    if profissional.loja not in current_user.owned_lojas:
+        abort(403)
+
+    # Ordena os horários por dia da semana para garantir a consistência
+    horarios = HorarioTrabalho.query.filter_by(profissional_id=profissional.id).order_by(HorarioTrabalho.dia_da_semana).all()
+
+    form = GerenciarHorariosForm()
+
+    if form.validate_on_submit():
+        for i, dia_form in enumerate(form.dias):
+            horario = horarios[i]
+            horario.e_folga = dia_form.e_folga.data
+            if not horario.e_folga:
+                horario.horario_inicio = dia_form.horario_inicio.data
+                horario.horario_fim = dia_form.horario_fim.data
+                horario.almoco_inicio = dia_form.almoco_inicio.data
+                horario.almoco_fim = dia_form.almoco_fim.data
+                horario.pausa_entre_atendimentos = dia_form.pausa_entre_atendimentos.data
+            else:
+                # Limpa os campos se for folga
+                horario.horario_inicio = None
+                horario.horario_fim = None
+                horario.almoco_inicio = None
+                horario.almoco_fim = None
+                horario.pausa_entre_atendimentos = None
+        db.session.commit()
+        flash('Horários atualizados com sucesso!', 'success')
+        return redirect(url_for('profissionais.listar_profissionais'))
+
+    elif request.method == 'GET':
+        for i, dia_form in enumerate(form.dias):
+            horario = horarios[i]
+            dia_form.e_folga.data = horario.e_folga
+            dia_form.horario_inicio.data = horario.horario_inicio
+            dia_form.horario_fim.data = horario.horario_fim
+            dia_form.almoco_inicio.data = horario.almoco_inicio
+            dia_form.almoco_fim.data = horario.almoco_fim
+            dia_form.pausa_entre_atendimentos.data = horario.pausa_entre_atendimentos
+
+    return render_template('profissionais/gerenciar_horarios.html',
+                           title=f'Gerenciar Horários de {profissional.user.nome}',
+                           profissional=profissional, form=form)

@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField, FloatField, IntegerField, SelectMultipleField
-from wtforms.fields import DateTimeField
+from wtforms import StringField, PasswordField, SubmitField, SelectField, FloatField, IntegerField, SelectMultipleField, BooleanField, FormField
+from wtforms.fields import DateTimeField, TimeField
+from wtforms.form import Form
 from wtforms_sqlalchemy.fields import QuerySelectField
 from flask_wtf.file import FileField, FileAllowed
 from wtforms.validators import DataRequired, EqualTo, Length, ValidationError, NumberRange
@@ -60,6 +61,20 @@ class AddAgendamentoForm(FlaskForm):
     profissional = QuerySelectField('Profissional', query_factory=None, get_label=get_profissional_label, get_pk=get_pk_from_identity, allow_blank=True, blank_text='-- Selecione um Profissional --')
 
     submit = SubmitField('Salvar Agendamento')
+
+class HorarioDiaForm(Form):
+    """Sub-formulário para os horários de um único dia."""
+    horario_inicio = TimeField('Início', format='%H:%M')
+    horario_fim = TimeField('Fim', format='%H:%M')
+    almoco_inicio = TimeField('Início Almoço', format='%H:%M')
+    almoco_fim = TimeField('Fim Almoço', format='%H:%M')
+    pausa_entre_atendimentos = IntegerField('Pausa (min)')
+    e_folga = BooleanField('Folga')
+
+class GerenciarHorariosForm(FlaskForm):
+    """Formulário principal para gerenciar a semana inteira."""
+    dias = FieldList(FormField(HorarioDiaForm), min_entries=7, max_entries=7)
+    submit = SubmitField('Salvar Horários')
 
 class LojaForm(FlaskForm):
     """Formulário para criar/editar uma loja."""

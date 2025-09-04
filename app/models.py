@@ -1,5 +1,6 @@
 from . import db
 from flask_login import UserMixin
+from sqlalchemy import Time
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
@@ -67,6 +68,7 @@ class Profissional(db.Model):
     servicos = db.relationship('Servico', secondary=profissional_servico_association,
                                back_populates='profissionais', lazy='dynamic')
     agendamentos = db.relationship('Agendamento', backref='profissional', lazy=True)
+    horarios = db.relationship('HorarioTrabalho', backref='profissional', lazy=True, cascade="all, delete-orphan")
 
     def __repr__(self):
         return f'<Profissional Profile for User {self.user_id}>'
@@ -105,3 +107,21 @@ class Agendamento(db.Model):
 
     def __repr__(self):
         return f'<Agendamento {self.id} em {self.data_hora_inicio}>'
+
+class HorarioTrabalho(db.Model):
+    """Model para os horários de trabalho de um profissional."""
+    __tablename__ = 'horarios_trabalho'
+
+    id = db.Column(db.Integer, primary_key=True)
+    # 0: Segunda, 1: Terça, ..., 6: Domingo
+    dia_da_semana = db.Column(db.Integer, nullable=False)
+    horario_inicio = db.Column(Time, nullable=True)
+    horario_fim = db.Column(Time, nullable=True)
+    almoco_inicio = db.Column(Time, nullable=True)
+    almoco_fim = db.Column(Time, nullable=True)
+    pausa_entre_atendimentos = db.Column(db.Integer, nullable=True) # em minutos
+    e_folga = db.Column(db.Boolean, nullable=False, default=True)
+    profissional_id = db.Column(db.Integer, db.ForeignKey('profissionais.id'), nullable=False)
+
+    def __repr__(self):
+        return f'<Horario para Profissional {self.profissional_id} no dia {self.dia_da_semana}>'

@@ -32,7 +32,8 @@
                             {% endif %}
                         </td>
                         <td>
-                            <a href="{{ url_for('profissionais.editar_profissional', user_id=profissional.user.id) }}" class="btn btn-sm btn-primary">Editar</a>
+                            <a href="{{ url_for('profissionais.editar_profissional', user_id=profissional.user.id) }}" class="btn btn-sm btn-outline-primary">Editar</a>
+                            <a href="{{ url_for('profissionais.gerenciar_horarios', profissional_id=profissional.id) }}" class="btn btn-sm btn-outline-info">Horários</a>
                             <form action="{{ url_for('profissionais.excluir_profissional', user_id=profissional.user.id) }}" method="POST" class="d-inline">
                                 <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir este profissional?')">Excluir</button>
                             </form>

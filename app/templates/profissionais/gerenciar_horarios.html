@@ -1,0 +1,81 @@
+{% extends "dashboard/layout.html" %}
+
+{% block dashboard_content %}
+    <h2>{{ title }}</h2>
+    <div class="card mt-4">
+        <div class="card-body">
+            <form method="POST" action="">
+                {{ form.hidden_tag() }}
+                <div class="row">
+                    {% for dia_form in form.dias %}
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5>{{ ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'][loop.index0] }}</h5>
+                                <div class="form-check form-switch">
+                                    {{ dia_form.e_folga(class="form-check-input", role="switch", id="folga-" ~ loop.index0) }}
+                                    {{ dia_form.e_folga.label(class="form-check-label") }}
+                                </div>
+                            </div>
+                            <div class="card-body time-fields-wrapper" id="fields-wrapper-{{ loop.index0 }}">
+                                <div class="mb-2">
+                                    {{ dia_form.horario_inicio.label(class="form-label") }}
+                                    {{ dia_form.horario_inicio(class="form-control") }}
+                                </div>
+                                <div class="mb-2">
+                                    {{ dia_form.horario_fim.label(class="form-label") }}
+                                    {{ dia_form.horario_fim(class="form-control") }}
+                                </div>
+                                <hr>
+                                <div class="mb-2">
+                                    {{ dia_form.almoco_inicio.label(class="form-label") }}
+                                    {{ dia_form.almoco_inicio(class="form-control") }}
+                                </div>
+                                <div class="mb-2">
+                                    {{ dia_form.almoco_fim.label(class="form-label") }}
+                                    {{ dia_form.almoco_fim(class="form-control") }}
+                                </div>
+                                <hr>
+                                <div class="mb-2">
+                                    {{ dia_form.pausa_entre_atendimentos.label(class="form-label") }}
+                                    {{ dia_form.pausa_entre_atendimentos(class="form-control") }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="mt-3">
+                    {{ form.submit(class="btn btn-primary") }}
+                    <a href="{{ url_for('profissionais.listar_profissionais') }}" class="btn btn-secondary">Voltar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function toggleTimeFields(checkbox) {
+        const wrapperId = 'fields-wrapper-' + checkbox.id.split('-')[1];
+        const wrapper = document.getElementById(wrapperId);
+        if (wrapper) {
+            wrapper.style.display = checkbox.checked ? 'none' : 'block';
+        }
+    }
+
+    const folgaCheckboxes = document.querySelectorAll('input[type="checkbox"][id^="folga-"]');
+    folgaCheckboxes.forEach(function(checkbox) {
+        // Set initial state on page load
+        toggleTimeFields(checkbox);
+
+        // Add event listener for changes
+        checkbox.addEventListener('change', function() {
+            toggleTimeFields(this);
+        });
+    });
+});
+</script>
+{% endblock %}

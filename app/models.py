@@ -69,6 +69,7 @@ class Profissional(db.Model):
                                back_populates='profissionais', lazy='dynamic')
     agendamentos = db.relationship('Agendamento', backref='profissional', lazy=True)
     horarios = db.relationship('HorarioTrabalho', backref='profissional', lazy=True, cascade="all, delete-orphan")
+    comissoes = db.relationship('Comissao', backref='profissional', lazy=True, cascade="all, delete-orphan")
 
     def __repr__(self):
         return f'<Profissional Profile for User {self.user_id}>'
@@ -105,6 +106,8 @@ class Agendamento(db.Model):
     profissional_id = db.Column(db.Integer, db.ForeignKey('profissionais.id'), nullable=False)
     servico_id = db.Column(db.Integer, db.ForeignKey('servicos.id'), nullable=False)
 
+    comissao = db.relationship('Comissao', backref='agendamento', uselist=False, cascade="all, delete-orphan")
+
     def __repr__(self):
         return f'<Agendamento {self.id} em {self.data_hora_inicio}>'
 
@@ -125,3 +128,19 @@ class HorarioTrabalho(db.Model):
 
     def __repr__(self):
         return f'<Horario para Profissional {self.profissional_id} no dia {self.dia_da_semana}>'
+
+class Comissao(db.Model):
+    """Model para as comissões a serem pagas aos profissionais."""
+    __tablename__ = 'comissoes'
+
+    id = db.Column(db.Integer, primary_key=True)
+    valor = db.Column(db.Float, nullable=False)
+    status = db.Column(db.String(20), nullable=False, default='pendente') # pendente, paga
+    data_geracao = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    data_pagamento = db.Column(db.DateTime, nullable=True)
+
+    agendamento_id = db.Column(db.Integer, db.ForeignKey('agendamentos.id'), nullable=False)
+    profissional_id = db.Column(db.Integer, db.ForeignKey('profissionais.id'), nullable=False)
+
+    def __repr__(self):
+        return f'<Comissao {self.id} - R${self.valor}>'

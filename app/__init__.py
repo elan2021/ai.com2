@@ -42,6 +42,7 @@ def create_app():
         from .profissionais_routes import profissionais_bp
         from .servicos_routes import servicos_bp
         from .agendamentos_routes import agendamentos_bp
+        from .comissoes_routes import comissoes_bp
 
         # Register Blueprints
         app.register_blueprint(main_bp)
@@ -52,6 +53,7 @@ def create_app():
         app.register_blueprint(profissionais_bp)
         app.register_blueprint(servicos_bp)
         app.register_blueprint(agendamentos_bp)
+        app.register_blueprint(comissoes_bp)
 
         # Create database tables for our models
         db.create_all()

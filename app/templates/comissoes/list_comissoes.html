@@ -1,0 +1,53 @@
+{% extends "dashboard/layout.html" %}
+
+{% block dashboard_content %}
+    <div class="d-flex justify-content-between align-items-center">
+        <h2>{{ title }}</h2>
+    </div>
+    <div class="card mt-4">
+        <div class="card-body">
+            {% if comissoes %}
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Data Geração</th>
+                        <th scope="col">Profissional</th>
+                        <th scope="col">Agendamento (Cliente)</th>
+                        <th scope="col">Valor</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for comissao in comissoes %}
+                    <tr>
+                        <td>{{ comissao.data_geracao.strftime('%d/%m/%Y') }}</td>
+                        <td>{{ comissao.profissional.user.nome }}</td>
+                        <td>{{ comissao.agendamento.cliente_nome }} ({{ comissao.agendamento.data_hora_inicio.strftime('%d/%m') }})</td>
+                        <td>R$ {{ "%.2f"|format(comissao.valor) }}</td>
+                        <td>
+                            {% if comissao.status == 'pendente' %}
+                                <span class="badge bg-warning text-dark">Pendente</span>
+                            {% elif comissao.status == 'paga' %}
+                                <span class="badge bg-success">Paga</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if comissao.status == 'pendente' %}
+                                <form action="{{ url_for('comissoes.pagar_comissao', comissao_id=comissao.id) }}" method="POST" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-success">Marcar como Paga</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="text-center">
+                <p>Nenhuma comissão encontrada.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

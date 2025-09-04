@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, abort, request
 from flask_login import login_required, current_user
 from .forms import AddAgendamentoForm
-from .models import Loja, Agendamento, Servico, Profissional
+from .models import Loja, Agendamento, Servico, Profissional, Comissao
 from . import db
 from functools import wraps
 from datetime import timedelta
@@ -116,7 +116,28 @@ def concluir_agendamento(agendamento_id):
     if agendamento.loja not in current_user.owned_lojas:
         abort(403)
 
-    agendamento.status = 'concluido'
-    db.session.commit()
-    flash('Agendamento marcado como concluído!', 'success')
+    # Apenas muda o status e gera comissão se não estiver concluído ainda
+    if agendamento.status != 'concluido':
+        agendamento.status = 'concluido'
+
+        # Gera a comissão
+        profissional = agendamento.profissional
+        servico = agendamento.servico
+
+        if profissional.comissao_tipo == 'porcentagem':
+            valor_comissao = (servico.preco * profissional.comissao_valor / 100)
+        else: # Fixo
+            valor_comissao = profissional.comissao_valor
+
+        nova_comissao = Comissao(
+            valor=valor_comissao,
+            agendamento_id=agendamento.id,
+            profissional_id=profissional.id
+        )
+        db.session.add(nova_comissao)
+        db.session.commit()
+        flash('Agendamento marcado como concluído e comissão gerada!', 'success')
+    else:
+        flash('Este agendamento já foi concluído anteriormente.', 'info')
+
     return redirect(url_for('agendamentos.listar_agendamentos'))

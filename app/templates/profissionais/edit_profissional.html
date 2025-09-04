@@ -35,6 +35,19 @@
                         {{ form.comissao_valor(class="form-control") }}
                     </div>
                 </div>
+                <div class="line"></div>
+                <h4>Serviços Realizados</h4>
+                <div class="mb-3">
+                    {{ form.servicos.label(class="form-label") }}
+                    <div class="form-check">
+                        {% for subfield in form.servicos %}
+                            <div class="form-check">
+                                {{ subfield(class="form-check-input") }}
+                                {{ subfield.label(class="form-check-label") }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
                 {{ form.submit(class="btn btn-primary mt-3") }}
                 <a href="{{ url_for('profissionais.listar_profissionais') }}" class="btn btn-secondary mt-3">Cancelar</a>
             </form>

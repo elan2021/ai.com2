@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, abort, request
 from flask_login import login_required, current_user
 from .forms import AddProfissionalForm, EditProfissionalForm
-from .models import User, Profissional
+from .models import User, Profissional, Servico
 from . import db
 from functools import wraps
 
@@ -67,15 +67,27 @@ def listar_profissionais():
 @proprietario_required
 def editar_profissional(user_id):
     user = User.query.get_or_404(user_id)
-    if user.profissional_profile.loja not in current_user.owned_lojas:
+    profissional = user.profissional_profile
+    if profissional.loja not in current_user.owned_lojas:
         abort(403)
 
     form = EditProfissionalForm()
+    # Popula as escolhas do campo de serviços com os serviços da loja
+    loja_servicos = Servico.query.filter_by(loja_id=profissional.loja_id).all()
+    form.servicos.choices = [(s.id, s.nome) for s in loja_servicos]
+
     if form.validate_on_submit():
         user.nome = form.nome.data
         user.whatsapp = form.whatsapp.data
-        user.profissional_profile.comissao_tipo = form.comissao_tipo.data
-        user.profissional_profile.comissao_valor = form.comissao_valor.data
+        profissional.comissao_tipo = form.comissao_tipo.data
+        profissional.comissao_valor = form.comissao_valor.data
+
+        # Atualiza os serviços associados
+        profissional.servicos = []
+        for servico_id in form.servicos.data:
+            servico = Servico.query.get(servico_id)
+            profissional.servicos.append(servico)
+
         db.session.commit()
         flash('Profissional atualizado com sucesso!', 'success')
         return redirect(url_for('profissionais.listar_profissionais'))
@@ -83,8 +95,9 @@ def editar_profissional(user_id):
     elif request.method == 'GET':
         form.nome.data = user.nome
         form.whatsapp.data = user.whatsapp
-        form.comissao_tipo.data = user.profissional_profile.comissao_tipo
-        form.comissao_valor.data = user.profissional_profile.comissao_valor
+        form.comissao_tipo.data = profissional.comissao_tipo
+        form.comissao_valor.data = profissional.comissao_valor
+        form.servicos.data = [s.id for s in profissional.servicos]
 
     return render_template('profissionais/edit_profissional.html', title='Editar Profissional', form=form, profissional_user=user)
 

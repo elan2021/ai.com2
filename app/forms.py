@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField, FloatField, IntegerField
+from wtforms import StringField, PasswordField, SubmitField, SelectField, FloatField, IntegerField, SelectMultipleField
 from flask_wtf.file import FileField, FileAllowed
 from wtforms.validators import DataRequired, EqualTo, Length, ValidationError, NumberRange
 from .models import User, Loja
@@ -32,6 +32,7 @@ class EditProfissionalForm(FlaskForm):
     whatsapp = StringField('WhatsApp', validators=[DataRequired(), Length(min=10, max=20)])
     comissao_tipo = SelectField('Tipo de Comissão', choices=[('porcentagem', 'Porcentagem (%)'), ('fixo', 'Valor Fixo (R$)')], validators=[DataRequired()])
     comissao_valor = FloatField('Valor da Comissão', validators=[DataRequired(), NumberRange(min=0)])
+    servicos = SelectMultipleField('Serviços Realizados', coerce=int)
     submit = SubmitField('Salvar Alterações')
 
 class ServicoForm(FlaskForm):

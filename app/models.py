@@ -45,6 +45,12 @@ class Loja(db.Model):
     def __repr__(self):
         return f'<Loja {self.nome}>'
 
+# Tabela de associação para a relação muitos-para-muitos
+profissional_servico_association = db.Table('profissional_servico',
+    db.Column('profissional_id', db.Integer, db.ForeignKey('profissionais.id'), primary_key=True),
+    db.Column('servico_id', db.Integer, db.ForeignKey('servicos.id'), primary_key=True)
+)
+
 class Profissional(db.Model):
     """Model para o perfil do profissional, com detalhes de comissão."""
     __tablename__ = 'profissionais'
@@ -55,6 +61,9 @@ class Profissional(db.Model):
 
     comissao_tipo = db.Column(db.String(20), nullable=False, default='porcentagem') # 'porcentagem' ou 'fixo'
     comissao_valor = db.Column(db.Float, nullable=False, default=0.0)
+
+    servicos = db.relationship('Servico', secondary=profissional_servico_association,
+                               back_populates='profissionais', lazy='dynamic')
 
     def __repr__(self):
         return f'<Profissional Profile for User {self.user_id}>'
@@ -68,6 +77,9 @@ class Servico(db.Model):
     duracao = db.Column(db.Integer, nullable=False) # Duração em minutos
     preco = db.Column(db.Float, nullable=False)
     loja_id = db.Column(db.Integer, db.ForeignKey('lojas.id'), nullable=False)
+
+    profissionais = db.relationship('Profissional', secondary=profissional_servico_association,
+                                    back_populates='servicos', lazy='dynamic')
 
     def __repr__(self):
         return f'<Servico {self.nome}>'

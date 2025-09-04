@@ -101,13 +101,12 @@ class Agendamento(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     data_hora_inicio = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     data_hora_fim = db.Column(db.DateTime, nullable=False)
-    status = db.Column(db.String(20), nullable=False, default='agendado') # agendado, concluido, cancelado
-    cliente_nome = db.Column(db.String(100), nullable=False)
-    cliente_contato = db.Column(db.String(100), nullable=True)
+    status = db.Column(db.String(20), nullable=False, default='agendado') # agendado, confirmado, concluido, cancelado
 
     loja_id = db.Column(db.Integer, db.ForeignKey('lojas.id'), nullable=False)
     profissional_id = db.Column(db.Integer, db.ForeignKey('profissionais.id'), nullable=False)
     servico_id = db.Column(db.Integer, db.ForeignKey('servicos.id'), nullable=False)
+    cliente_id = db.Column(db.Integer, db.ForeignKey('clientes.id'), nullable=False)
 
     comissao = db.relationship('Comissao', backref='agendamento', uselist=False, cascade="all, delete-orphan")
 
@@ -156,6 +155,8 @@ class Cliente(db.Model):
     nome = db.Column(db.String(100), nullable=False)
     telefone = db.Column(db.String(20), nullable=False)
     loja_id = db.Column(db.Integer, db.ForeignKey('lojas.id'), nullable=False)
+
+    agendamentos = db.relationship('Agendamento', backref='cliente', lazy=True)
 
     def __repr__(self):
         return f'<Cliente {self.nome}>'

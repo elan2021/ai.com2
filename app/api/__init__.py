@@ -23,6 +23,10 @@ api = Api(
 
 from .servicos import api as ns_servicos
 from .clientes import api as ns_clientes
+from .agendamentos import api as ns_agendamentos
+from .disponibilidade import api as ns_disponibilidade
 
 api.add_namespace(ns_servicos)
 api.add_namespace(ns_clientes)
+api.add_namespace(ns_agendamentos)
+api.add_namespace(ns_disponibilidade)

@@ -101,7 +101,7 @@ class Agendamento(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     data_hora_inicio = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     data_hora_fim = db.Column(db.DateTime, nullable=False)
-    status = db.Column(db.String(20), nullable=False, default='agendado') # agendado, confirmado, concluido, cancelado
+    status = db.Column(db.String(20), nullable=False, default='agendado') # agendado, concluido, cancelado
 
     loja_id = db.Column(db.Integer, db.ForeignKey('lojas.id'), nullable=False)
     profissional_id = db.Column(db.Integer, db.ForeignKey('profissionais.id'), nullable=False)

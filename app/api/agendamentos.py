@@ -41,10 +41,6 @@ agendamento_post_parser.add_argument('servico_id', type=int, required=True, help
 agendamento_post_parser.add_argument('data', type=str, required=True, help='Data do agendamento (YYYY-MM-DD)', location='json')
 agendamento_post_parser.add_argument('hora_inicio', type=str, required=True, help='Hora de início do agendamento (HH:MM)', location='json')
 
-agendamento_put_parser = api.parser()
-agendamento_put_parser.add_argument('status', type=str, required=True, choices=('confirmado', 'cancelado'), help='Novo status do agendamento', location='json')
-
-
 @api.route('/')
 class AgendamentoList(Resource):
     @api.doc(security='apikey')
@@ -79,27 +75,8 @@ class AgendamentoList(Resource):
             cliente_id=cliente.id,
             servico_id=servico.id,
             profissional_id=profissional.id,
-            status='confirmado' # API cria agendamentos como 'confirmado'
+            status='agendado' # Padronizando o status inicial
         )
         db.session.add(novo_agendamento)
         db.session.commit()
         return novo_agendamento, 201
-
-@api.route('/<int:id>')
-class AgendamentoResource(Resource):
-    @api.doc(security='apikey')
-    @api.expect(agendamento_put_parser)
-    @api.marshal_with(agendamento_model)
-    @api_key_required
-    def put(self, id):
-        """Atualiza o status de um agendamento (Confirmado ou Cancelado)"""
-        args = agendamento_put_parser.parse_args()
-        loja = g.loja
-
-        agendamento = Agendamento.query.get_or_404(id)
-        if agendamento.loja_id != loja.id:
-            api.abort(403, 'Este agendamento não pertence à sua loja.')
-
-        agendamento.status = args['status']
-        db.session.commit()
-        return agendamento, 200
